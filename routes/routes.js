@@ -4,8 +4,13 @@ const router = express.Router();
 
 router.get('*', (req, res) => {
     switch (req.originalUrl) {
-        case "/":
+        case '/':
             res.render('index')
+            break;
+        case '/request':
+            require('../request/request')(data, (response)=>{
+                res.send(response)
+            })
             break;
         default:
             res.sendStatus(404);
