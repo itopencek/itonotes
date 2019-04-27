@@ -1,38 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>itoNotes</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
-    
-    <!-- Quill -->
-    <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
-
-    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
-    <!-- end of Quill -->
-
-</head>
-<body>
-    <header>
-        
-    </header>
-    <main>
-        <section id='editor-wrapper'>
-            <div id='editor'>
-            </div>
-        </section>
-    </main>
-    <footer>
-
-    </footer>
-    <script>
 var Delta = Quill.import('delta');
 var quill = new Quill('#editor', {
     modules: {
@@ -61,21 +26,18 @@ $(document).ready(() => {
     function start() {
         if (location.hash) {
             let data = {
-                'data': location.hash,
+                data: location.hash
             };
+            console.log(data);
             console.log('herj');
 
             $.ajax({
-                    method: 'POST',
+                    type: 'GET',
+                    data: data,
                     url: '/getData',
                     dataType: 'json',
-                    data: data,
                 })
-                .done((updateData) => {
-                  quill.setContents([
-                    { insert: updateData.data },
-                  ]);   
-                })
+                .done()
                 .fail()
 
         } else {
@@ -124,6 +86,3 @@ $(document).ready(() => {
     }
 start()
 })
-    </script>
-</body>
-</html>

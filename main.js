@@ -4,14 +4,14 @@ let path = require('path');
 
 app.set('view engine', 'ejs');
 
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
+
 //midleware for public/static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Bodyparser
 app.use(express.urlencoded({ extended: true }));
-
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
 
 //routes
 app.use('/', require('./routes/routes'));
