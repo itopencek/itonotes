@@ -21,22 +21,27 @@ router.get('*', (req, res) => {
 
 router.post('*', (req, res) => {
     let data;
-    if(req.body.data){
+    if (req.body.data) {
         data = req.body.data;
     }
     switch (req.originalUrl) {
+
         //getting content for existing url
         case '/getData':
             require('../request/getData')(data, (bool, updateData) => {
                 res.send(updateData)
             })
             break;
+
         //updating content
         case '/update':
-            require('../request/update')(data, (response) => {
+            let hash = req.body.hash;
+            require('../request/update')(data, hash, (response) => {
                 res.send(response);
             })
             break;
+            
+        //default
         default:
             res.sendStatus(404);
             break;

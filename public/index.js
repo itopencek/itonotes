@@ -72,7 +72,8 @@ $(document).ready(() => {
             console.log('Saving changes');
 
             let dataRepeat = {
-                'data': quill.getContents().ops
+                'data': quill.getContents().ops,
+                'hash': location.hash,
             };
             //ajax to send data to update data in db
             $.ajax({

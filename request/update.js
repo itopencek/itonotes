@@ -9,10 +9,21 @@ const client = new Client({
 
 var conn = null;
 
-function main(data, callback){
-    if(!conn){
-        callback('test')
-    }else{
+function updateDatabase(data, hash, callback) {
+    client.connect()
+    client.query(`UPDATE url SET data = '${data}' WHERE url = '${hash}'`,(err,res) => {
+        if (err) throw err;
+        callback(true)
+    })
+}
+
+function main(data, hash, callback) {
+    if (!conn) {
+        updateDatabase(data, hash, (res) => {
+            client.end();
+            callback(res)
+        })
+    } else {
         callback(conn)
     }
 }
