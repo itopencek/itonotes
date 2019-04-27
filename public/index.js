@@ -21,7 +21,6 @@ $(document).ready(() => {
         theme: 'snow' // or 'bubble'
     });
     quill.on('text-change', (delta) => {
-        console.log('change has been registered');
         change = change.compose(delta);
     });
 
@@ -41,9 +40,7 @@ $(document).ready(() => {
                     'data': data,
                 })
                 .done((updateData) => {
-                    quill.setContents([{
-                        insert: updateData.data
-                    }, ]);
+                    quill.setContents(JSON.parse(updateData.data));
                 })
                 .fail()
 
@@ -55,7 +52,6 @@ $(document).ready(() => {
                     'type': 'GET',
                     'url': '/start'
                 }).done((response) => {
-                    console.log(response);
                     location.hash = response;
                     setInterval(repeatFunc, 3000);
 
@@ -69,8 +65,6 @@ $(document).ready(() => {
     //updating database
     function repeatFunc() {
         if (change.ops.length > 0) {
-            console.log('Saving changes');
-
             let dataRepeat = {
                 'data': quill.getContents().ops,
                 'hash': location.hash,

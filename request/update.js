@@ -10,8 +10,9 @@ const client = new Client({
 var conn = null;
 
 function updateDatabase(data, hash, callback) {
+    let dataOut = JSON.stringify(data)
     client.connect()
-    client.query(`UPDATE url SET data = '${data}' WHERE url = '${hash}'`,(err,res) => {
+    client.query(`UPDATE url SET data = '${dataOut}' WHERE url = '${hash}'`,(err,res) => {
         if (err) throw err;
         callback(true)
     })
@@ -20,8 +21,14 @@ function updateDatabase(data, hash, callback) {
 function main(data, hash, callback) {
     if (!conn) {
         updateDatabase(data, hash, (res) => {
-            client.end();
             callback(res)
+            /* carefully
+            /* not ending
+            /* the client.connect()
+            /* try .then() after client.connect()
+            /* commets by ito for ito
+            /* good night
+            */
         })
     } else {
         callback(conn)

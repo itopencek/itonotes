@@ -16,7 +16,6 @@ client.end()
 
 */
 function getData(url, callback){
-    console.log('ach jaj');
     client.query(`SELECT * FROM url WHERE url = '${url}'`, (err, response) => {
         if(err) throw err;
         if(response.rowCount == 0){
@@ -39,7 +38,6 @@ function getData(url, callback){
 function main(url, callback){
     if(!conn){
         getData(url, (bool, data) => {
-                console.log('preco')
                 callback(bool, data)
         })
     }else{
