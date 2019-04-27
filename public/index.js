@@ -1,50 +1,59 @@
-var Delta = Quill.import('delta');
-var quill = new Quill('#editor', {
-    modules: {
-        toolbar: [
-            [{
-                size: ['small', false, 'large', 'huge']
-            }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{
-                'color': []
-            }, {
-                'background': []
-            }],
-            ['link']
-        ]
-    },
-    placeholder: 'Note everything...',
-    theme: 'snow' // or 'bubble'
-});
 $(document).ready(() => {
-    var change = new Delta();
+    var Delta = Quill.import('delta');
+    let change = new Delta();
+
+    var quill = new Quill('#editor', {
+        modules: {
+            toolbar: [
+                [{
+                    size: ['small', false, 'large', 'huge']
+                }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{
+                    'color': []
+                }, {
+                    'background': []
+                }],
+                ['link']
+            ]
+        },
+        placeholder: 'Note everything...',
+        theme: 'snow' // or 'bubble'
+    });
     quill.on('text-change', (delta) => {
+        console.log('change has been registered');
         change = change.compose(delta);
     });
 
+    //starting function
     function start() {
+        //chceking if url has # in it
         if (location.hash) {
             let data = {
-                data: location.hash
+                'data': location.hash,
             };
-            console.log(data);
-            console.log('herj');
 
+            //ajax to get data from db where url = location.hash
             $.ajax({
-                    type: 'GET',
-                    data: data,
-                    url: '/getData',
-                    dataType: 'json',
+                    'method': 'POST',
+                    'url': '/getData',
+                    'dataType': 'json',
+                    'data': data,
                 })
-                .done()
+                .done((updateData) => {
+                    quill.setContents([{
+                        insert: updateData.data
+                    }, ]);
+                })
                 .fail()
 
         } else {
 
+            //without #
+            //generating new #
             $.ajax({
-                    type: 'GET',
-                    url: '/start'
+                    'type': 'GET',
+                    'url': '/start'
                 }).done((response) => {
                     console.log(response);
                     location.hash = response;
@@ -57,16 +66,21 @@ $(document).ready(() => {
         }
     }
 
+    //updating database
     function repeatFunc() {
-        if (change.length() > 0) {
-            console.log('Saving changes ', change);
+        if (change.ops.length > 0) {
+            console.log('Saving changes');
 
-            let data = quill.getContents();
+            let dataRepeat = {
+                'data': quill.getContents().ops
+            };
+            //ajax to send data to update data in db
             $.ajax({
-                    type: 'GET',
-                    dataType: 'json',
-                    data: data,
-                    url: '/request'
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'cotentType': 'application/json',
+                    'data': dataRepeat,
+                    'url': '/update',
                 })
                 .done((res) => {
                     console.log(res);
@@ -84,5 +98,5 @@ $(document).ready(() => {
             return 'There are unsaved changes. Are you sure you want to leave?';
         }
     }
-start()
+    start()
 })

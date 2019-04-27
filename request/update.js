@@ -11,7 +11,7 @@ var conn = null;
 
 function main(data, callback){
     if(!conn){
-        console.log('oukej from request.js');
+        callback('test')
     }else{
         callback(conn)
     }

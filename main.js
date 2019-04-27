@@ -1,20 +1,28 @@
 const express = require('express');
 const app = express();
+const bodyparser = require("body-parser");
 let path = require('path');
 
-app.set('view engine', 'ejs');
+//post body parser
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({
+    extended: true
+}));
 
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
+//EJS
+app.set('view engine', 'ejs');
 
 //midleware for public/static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+//routes
+app.use('/', require('./routes/routes'));
+
 //Bodyparser
 app.use(express.urlencoded({ extended: true }));
 
-//routes
-app.use('/', require('./routes/routes'));
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
 
 //port
 const PORT = process.env.PORT || 5000;
