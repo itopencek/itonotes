@@ -8,10 +8,15 @@ const client = new Client({
 });
 
 var conn = null;
+client.connect();
+/*
 
+NOT ENDING CONNECTION!
+client.end()
+
+*/
 function getData(url, callback){
     console.log('ach jaj');
-    
     client.query(`SELECT * FROM url WHERE url = '${url}'`, (err, response) => {
         if(err) throw err;
         if(response.rowCount == 0){
@@ -32,18 +37,13 @@ function getData(url, callback){
 }
 
 function main(url, callback){
-    client.connect();
     if(!conn){
         getData(url, (bool, data) => {
-            client.end((err) => {
-                if(err) throw err;
                 console.log('preco')
                 callback(bool, data)
-            });
         })
     }else{
         callback(false, conn)
     }
 }
-
 module.exports = main;
