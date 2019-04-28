@@ -23,14 +23,17 @@ function randomNumber(callback) {
 }
 
 function randomCheck(number, callback) {
-    pool.query(`SELECT * FROM url WHERE url = '${number}'`, (err, response) => {
-        if (err) throw err;
-        if (response.rows.length === 0) {
-            callback(number)
-        } else {
-            console.log('err in randomCheck in start.js ');
-            console.log(response)
-        }
+    pool.connect((error, client) => {
+        client.query(`SELECT * FROM url WHERE url = '${number}'`, (err, response) => {
+            if (err) throw err;
+            client.release()
+            if (response.rows.length === 0) {
+                callback(number)
+            } else {
+                console.log('err in randomCheck in start.js ');
+                console.log(response)
+            }
+        })
     })
 }
 
@@ -51,7 +54,6 @@ function main(callback) {
                     warning - not ending pool
                     not optimal
                 */
-                //pool.end();
                 callback(url);
             })
         })

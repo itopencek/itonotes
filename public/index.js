@@ -20,6 +20,7 @@ $(document).ready(() => {
         placeholder: 'Note everything...',
         theme: 'snow' // or 'bubble'
     });
+    // on every text-change save data to 'change'
     quill.on('text-change', (delta) => {
         change = change.compose(delta);
     });
@@ -40,24 +41,33 @@ $(document).ready(() => {
                     'data': data,
                 })
                 .done((updateData) => {
+                    //if successful then update the text-box
                     quill.setContents(JSON.parse(updateData.data));
+
+                    //setting update function
+                    setInterval(repeatFunc, 3000);
                 })
-                .fail()
+                .fail((err) => {
+                    console.log('We couldnt load the content :(');
+                    console.log(err);
+                })
 
         } else {
 
-            //without #
+            //when url doesnt have # in it
             //generating new #
             $.ajax({
                     'type': 'GET',
                     'url': '/start'
                 }).done((response) => {
                     location.hash = response;
+
+                    //setting update function
                     setInterval(repeatFunc, 3000);
 
                 })
                 .fail((err) => {
-                    console.log(err)
+                    console.log(err);
                 })
         }
     }
@@ -69,7 +79,7 @@ $(document).ready(() => {
                 'data': quill.getContents().ops,
                 'hash': location.hash,
             };
-            //ajax to send data to update data in db
+            //ajax to send dataRepeat to update data in db
             $.ajax({
                     'type': 'POST',
                     'dataType': 'json',
@@ -77,11 +87,9 @@ $(document).ready(() => {
                     'data': dataRepeat,
                     'url': '/update',
                 })
-                .done((res) => {
-                    console.log(res);
-                })
+                .done((res) => {})
                 .fail((err) => {
-                    console.log(err)
+                    console.log(err);
                 })
 
             change = new Delta();
