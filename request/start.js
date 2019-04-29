@@ -8,33 +8,41 @@ const pool = new Pool({
 });
 var conn = null;
 
-function randomNumber(callback) {
-    let i = 0;
-    let url = '';
-    let number = Math.floor(Math.random() * 1000) + 1;
-    number = number.toString(16);
-    randomCheck(number, (realNumber) => {
-        i = 2;
-        url = realNumber;
-        callback(url)
-    })
-
-
-}
-
-function randomCheck(number, callback) {
-    pool.connect((error, client) => {
-        client.query(`SELECT * FROM url WHERE url = '${number}'`, (err, response) => {
+function randomCheck(number) {
+    return new Promise((resolve, reject) => {
+        pool.connect((err, client) => {
             if (err) throw err;
-            client.release()
-            if (response.rows.length === 0) {
-                callback(number)
-            } else {
-                console.log('err in randomCheck in start.js ');
-                console.log(response)
-            }
+            client.query(`SELECT * FROM url WHERE url = '${number}'`, (err, response) => {
+                if (err) throw err;
+                client.release();
+                if (response.rows.length === 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            })
         })
     })
+}
+
+async function randomNumber(callback) {
+    let i = 0
+
+    while (i < 1) {
+        //genetrating numbers between 1000 and 11 000
+        let number = Math.floor(Math.random() * 10001) + 1000;
+
+        //using 36 numeral system
+        number = '#' + number.toString(36);
+
+        let checkedNumber = await randomCheck(number);
+
+        if (checkedNumber == true) {
+            i += 1;
+            callback(number);
+        };
+
+    }
 }
 
 function addToDatabase(url, callback) {

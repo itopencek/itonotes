@@ -8,12 +8,7 @@ const pool = new Pool({
 });
 
 var conn = null;
-/*
 
-NOT ENDING CONNECTION!
-client.end()
-
-*/
 function getData(url, callback) {
     pool.connect((err, client) => {
         client.query(`SELECT * FROM url WHERE url = '${url}'`, (err, response) => {
