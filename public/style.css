@@ -9,3 +9,18 @@ main{
     width: 75vw;
     height: 80vh;
 }
+.inToolbar{
+    display: block;
+    float: right;
+    height: 100%;
+    width: 13vw;
+    margin-right: 15px;
+}
+.inToolbar input{
+    width: inherit;
+    border: 0px;
+    border-bottom: 1px solid #ccc;
+}
+.inToolbar input:focus{
+    outline: none;
+}

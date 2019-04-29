@@ -101,5 +101,6 @@ $(document).ready(() => {
             return 'There are unsaved changes. Are you sure you want to leave?';
         }
     }
+    $('.ql-toolbar').append(`<div class='inToolbar'><input type='text' ></div>`);
     start()
 })

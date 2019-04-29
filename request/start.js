@@ -9,12 +9,15 @@ const pool = new Pool({
 var conn = null;
 
 function randomCheck(number) {
+    //returning promise
     return new Promise((resolve, reject) => {
         pool.connect((err, client) => {
             if (err) throw err;
+            //checking database for the same url
             client.query(`SELECT * FROM url WHERE url = '${number}'`, (err, response) => {
                 if (err) throw err;
                 client.release();
+                //resolving promise
                 if (response.rows.length === 0) {
                     resolve(true);
                 } else {
@@ -35,8 +38,10 @@ async function randomNumber(callback) {
         //using 36 numeral system
         number = '#' + number.toString(36);
 
+        // waiting until Promise is resolved
         let checkedNumber = await randomCheck(number);
 
+        //comparing resolved value, possibly ending loop
         if (checkedNumber == true) {
             i += 1;
             callback(number);
@@ -47,7 +52,7 @@ async function randomNumber(callback) {
 
 function addToDatabase(url, callback) {
     let isoDate = new Date().toISOString();
-    let newUrl = '#' + url;
+    let newUrl = url;
     pool.query(`INSERT INTO url VALUES(((SELECT max(id) FROM url)+1), '${newUrl}', '${isoDate}', '', '')`, (err) => {
         if (err) throw err;
         callback(url);
@@ -58,10 +63,6 @@ function main(callback) {
     if (!conn) {
         randomNumber((url) => {
             addToDatabase(url, (url) => {
-                /*
-                    warning - not ending pool
-                    not optimal
-                */
                 callback(url);
             })
         })
