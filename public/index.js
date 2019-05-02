@@ -2,6 +2,7 @@ $(document).ready(() => {
     var Delta = Quill.import('delta');
     let change = new Delta();
     let customUrl = '';
+    let url = '';
 
     var quill = new Quill('#editor', {
         modules: {
@@ -45,6 +46,7 @@ $(document).ready(() => {
                     //if successful then update the text-box
                     if (updateData.custom !== '') {
                         $('.inToolbar input').val(updateData.custom);
+                        customUrl = updateData.custom;
                     }
                     if (updateData.data === '') {
                         console.log('No data to display');
@@ -52,6 +54,7 @@ $(document).ready(() => {
                         quill.setContents(JSON.parse(updateData.data));
                     }
                     //setting update function
+                    url = location.hash;
                     setInterval(repeatFunc, 3000);
                 })
                 .fail((err) => {
@@ -68,7 +71,7 @@ $(document).ready(() => {
                     'url': '/start'
                 }).done((response) => {
                     location.hash = response;
-
+                    url = location.hash;
                     //setting update function
                     setInterval(repeatFunc, 3000);
 
@@ -81,6 +84,28 @@ $(document).ready(() => {
 
     //updating database
     function repeatFunc() {
+        let input = $('.inToolbar input');
+        if (customUrl !== input.val()) {
+            let inputValue = input.val();
+            let dataRepeat = {
+                'data': {
+                    'url': url,
+                    'input': inputValue,
+                }
+            };
+            $.ajax({
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'cotentType': 'application/json',
+                    'data': dataRepeat,
+                    'url': '/custom',
+
+                }).done((res) => {})
+                .fail((err) => {
+                    console.log('We could not update your custom url');
+                    console.log(err);
+                })
+        }
         if (change.ops.length > 0) {
             let dataRepeat = {
                 'data': quill.getContents().ops,
@@ -113,11 +138,8 @@ $(document).ready(() => {
             return 'There are unsaved changes. Are you sure you want to leave?';
         }
     }
+    //appending input
     $('.ql-toolbar').append(`<div class='inToolbar' maxlength='5'><input type='text'></input></div>`);
-    $('.ql-toolbar input').on('input', () => {
-        customUrl = $('#customInput').val();
-        console.log(customUrl);
-    })
 
     function savingChanges(bool) {
         if (bool === true) {
@@ -133,5 +155,6 @@ $(document).ready(() => {
             document.title = 'Error while saving changes';
         }
     }
+
     start()
 })

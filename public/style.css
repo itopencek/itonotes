@@ -47,8 +47,7 @@ main{
         height: 90vh;
     }
     .ql-toolbar{
-        position: sticky;
-        position: -webkit-sticky;
+
         height: 10vh;
         bottom: 0;
     }

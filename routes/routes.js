@@ -13,7 +13,7 @@ router.get('*', (req, res) => {
             })
             break;
         default:
-            res.sendStatus(404)
+            res.sendStatus(404);
             break;
     }
 
@@ -40,7 +40,12 @@ router.post('*', (req, res) => {
                 res.send(response);
             })
             break;
-            
+        
+        case '/custom':
+            require('../request/updateCustomUrl')(data, (response) => {
+                res.send(true);
+            })
+            break;
         //default
         default:
             res.sendStatus(404);
