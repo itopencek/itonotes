@@ -1,6 +1,7 @@
 $(document).ready(() => {
     var Delta = Quill.import('delta');
     let change = new Delta();
+    let customUrl = '';
 
     var quill = new Quill('#editor', {
         modules: {
@@ -42,8 +43,14 @@ $(document).ready(() => {
                 })
                 .done((updateData) => {
                     //if successful then update the text-box
-                    quill.setContents(JSON.parse(updateData.data));
-
+                    if(updateData.custom !== ''){
+                        $('.inToolbar input').val(updateData.custom);
+                    }
+                    if (updateData.data === '') {
+                        console.log('No data to display');
+                    } else {
+                        quill.setContents(JSON.parse(updateData.data));
+                    }
                     //setting update function
                     setInterval(repeatFunc, 3000);
                 })
@@ -74,12 +81,14 @@ $(document).ready(() => {
 
     //updating database
     function repeatFunc() {
-        if (change.ops.length > 0) {
+        let toolbar = $('.inToolbar input').val();
+        if (change.ops.length > 0 || toolbar.length > 0) {
             let dataRepeat = {
                 'data': quill.getContents().ops,
                 'hash': location.hash,
             };
             //ajax to send dataRepeat to update data in db
+            savingChanges(true)
             $.ajax({
                     'type': 'POST',
                     'dataType': 'json',
@@ -87,9 +96,12 @@ $(document).ready(() => {
                     'data': dataRepeat,
                     'url': '/update',
                 })
-                .done((res) => {})
+                .done((res) => {
+                    savingChanges(false)
+                })
                 .fail((err) => {
                     console.log(err);
+                    savingChanges(undefined)
                 })
 
             change = new Delta();
@@ -101,6 +113,15 @@ $(document).ready(() => {
             return 'There are unsaved changes. Are you sure you want to leave?';
         }
     }
-    $('.ql-toolbar').append(`<div class='inToolbar'><input type='text' ></div>`);
+    $('.ql-toolbar').append(`<div class='inToolbar' maxlength='5'><input type='text'></input></div>`);
+    $('.ql-toolbar input').on('input', () => {
+        customUrl = $('#customInput').val();
+        console.log(customUrl);
+    })
+    function savingChanges(bool){
+        if(bool === true){
+            console.log(bool);
+        }
+    }
     start()
 })
