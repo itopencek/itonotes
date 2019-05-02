@@ -43,7 +43,7 @@ $(document).ready(() => {
                 })
                 .done((updateData) => {
                     //if successful then update the text-box
-                    if(updateData.custom !== ''){
+                    if (updateData.custom !== '') {
                         $('.inToolbar input').val(updateData.custom);
                     }
                     if (updateData.data === '') {
@@ -81,14 +81,14 @@ $(document).ready(() => {
 
     //updating database
     function repeatFunc() {
-        let toolbar = $('.inToolbar input').val();
-        if (change.ops.length > 0 || toolbar.length > 0) {
+        if (change.ops.length > 0) {
             let dataRepeat = {
                 'data': quill.getContents().ops,
                 'hash': location.hash,
             };
-            //ajax to send dataRepeat to update data in db
+
             savingChanges(true)
+            //ajax to send dataRepeat to update data in db
             $.ajax({
                     'type': 'POST',
                     'dataType': 'json',
@@ -118,9 +118,19 @@ $(document).ready(() => {
         customUrl = $('#customInput').val();
         console.log(customUrl);
     })
-    function savingChanges(bool){
-        if(bool === true){
-            console.log(bool);
+
+    function savingChanges(bool) {
+        if (bool === true) {
+            document.title = 'Saving changes...'
+        } else if (bool === false) {
+            setTimeout(() => {
+                document.title = 'Changes Saved!';
+                setTimeout(() => {
+                    document.title = 'itoNotes';
+                }, 3000)
+            }, 1000)
+        } else {
+            document.title = 'Error while saving changes';
         }
     }
     start()
