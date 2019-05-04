@@ -139,7 +139,7 @@ $(document).ready(() => {
         }
     }
     //appending input
-    $('.ql-toolbar').append(`<div class='inToolbar' maxlength='5'><input type='text'></input></div>`);
+    //$('.ql-toolbar').append(`<div class='inToolbar' maxlength='5'><input type='text'></input></div>`);
 
     function savingChanges(bool) {
         if (bool === true) {
@@ -155,6 +155,6 @@ $(document).ready(() => {
             document.title = 'Error while saving changes';
         }
     }
-
+    
     start()
 })
