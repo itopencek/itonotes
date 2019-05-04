@@ -14,7 +14,7 @@ function getData(url, callback) {
         client.query(`SELECT * FROM url WHERE url = '${url}'`, (err, response) => {
             if (err) throw err;
             if (response.rowCount == 0) {
-                client.query(`SELECT * FROM url WHERE custom = '${url}'`, (error, responses) => {
+                client.query(`SELECT * FROM url WHERE custom = '${url.substr(1)}'`, (error, responses) => {
                     if (error) throw error;
                     client.release()
                     if (responses.rowCount == 0) {

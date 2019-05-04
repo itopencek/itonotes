@@ -13,10 +13,10 @@ function update(data, callback) {
 
     pool.connect((err, client) => {
         if (err) throw err;
-        client.query(`SELECT * FROM url WHERE custom = '${data.url}'`, (err, response) => {
+        client.query(`SELECT * FROM url WHERE custom = '${data.input}'`, (err, response) => {
             if (err) throw err;
             if (response.rows.length === 0) {
-                client.query(`UPDATE url SET custom = '${data.input}' WHERE url = '${data.url}'`, (err) => {
+                client.query(`UPDATE url SET custom = '${data.input}' WHERE url = '#${data.url}'`, (err) => {
                     if (err) throw err;
                     client.release()
                     callback(true)

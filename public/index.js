@@ -54,7 +54,8 @@ $(document).ready(() => {
                         quill.setContents(JSON.parse(updateData.data));
                     }
                     //setting update function
-                    url = location.hash;
+
+                    url = location.hash.substr(1);
                     setInterval(repeatFunc, 3000);
                 })
                 .fail((err) => {
@@ -71,7 +72,7 @@ $(document).ready(() => {
                     'url': '/start'
                 }).done((response) => {
                     location.hash = response;
-                    url = location.hash;
+                    url = location.hash.substr(1);
                     //setting update function
                     setInterval(repeatFunc, 3000);
 
@@ -86,6 +87,9 @@ $(document).ready(() => {
     function repeatFunc() {
         let input = $('.inToolbar input');
         if (customUrl !== input.val()) {
+            if (customUrl === undefined) {
+                customUrl = '';
+            }
             let inputValue = input.val();
             let dataRepeat = {
                 'data': {
@@ -100,7 +104,10 @@ $(document).ready(() => {
                     'data': dataRepeat,
                     'url': '/custom',
 
-                }).done((res) => {})
+                }).done((res) => {
+                    customUrl = inputValue;
+                    console.log('Custom url updated');
+                })
                 .fail((err) => {
                     console.log('We could not update your custom url');
                     console.log(err);
@@ -139,7 +146,7 @@ $(document).ready(() => {
         }
     }
     //appending input
-    //$('.ql-toolbar').append(`<div class='inToolbar' maxlength='5'><input type='text'></input></div>`);
+    $('.ql-toolbar').append(`<div class='inToolbar' style='display: inline-block;'><input type='text' maxlength='6'></input></div><div class='hashtag' style='float: right; margin-right: 3px;'>#</div>`);
 
     function savingChanges(bool) {
         if (bool === true) {
@@ -155,6 +162,6 @@ $(document).ready(() => {
             document.title = 'Error while saving changes';
         }
     }
-    
+
     start()
 })

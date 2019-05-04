@@ -23,7 +23,7 @@ main{
     display: block;
     float: right;
     height: 100%;
-    width: 13vw;
+    width: 10vw;
     margin-right: 15px;
 }
 .inToolbar input{
@@ -47,12 +47,12 @@ main{
         margin: 0px;
     }
     #editor{
-        min-height: 500px;
         width: 100%;
         height: 100%;
         font-size: 20px;
         padding-top: 15px;
         margin: 0px;
+        overflow: scroll;
     }
     .ql-toolbar{
         position: sticky;
@@ -62,11 +62,6 @@ main{
         top: 0;
         bottom: 0;
         border-top: 0px;
-        border-bottom: 0px;
-    }
-    .ql-formats span{
-        height: 50px;
-        width: 50px;
     }
     main{
         height: 100%;
