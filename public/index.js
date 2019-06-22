@@ -1,3 +1,6 @@
+// WARNING SAFETY
+// NOT CHECKING USER INPUT in the URL
+
 $(document).ready(() => {
     var Delta = Quill.import('delta');
     let change = new Delta();
@@ -29,12 +32,13 @@ $(document).ready(() => {
 
     //starting function
     function start() {
-        //chceking if url has # in it
+        //checking if url has # in it
         if (location.hash) {
             let data = {
                 'data': location.hash,
             };
-
+            
+            $('.inToolbar input').val(location.hash.substr(1));
             //ajax to get data from db where url = location.hash
             $.ajax({
                     'method': 'POST',
@@ -45,7 +49,7 @@ $(document).ready(() => {
                 .done((updateData) => {
                     //if successful then update the text-box
                     if (updateData.custom !== '') {
-                        $('.inToolbar input').val(updateData.custom);
+                        $('.inToolbar input').val(updateData.url.substr(1));
                         customUrl = updateData.custom;
                     }
                     if (updateData.data === '') {
@@ -65,14 +69,15 @@ $(document).ready(() => {
 
         } else {
 
-            //when url doesnt have # in it
-            //generating new #
+            //when url doesnt have location.hash in it
+            //generating new location.hash
             $.ajax({
                     'type': 'GET',
                     'url': '/start'
                 }).done((response) => {
                     location.hash = response;
                     url = location.hash.substr(1);
+                    $('.inToolbar input').val(url);
                     //setting update function
                     setInterval(repeatFunc, 3000);
 
@@ -87,6 +92,7 @@ $(document).ready(() => {
     function repeatFunc() {
         let input = $('.inToolbar input');
         if (customUrl !== input.val()) {
+            if(input.val().length > 2){
             if (customUrl === undefined) {
                 customUrl = '';
             }
@@ -105,13 +111,22 @@ $(document).ready(() => {
                     'url': '/custom',
 
                 }).done((res) => {
+                    if(res === true){
                     customUrl = inputValue;
-                    console.log('Custom url updated');
+                    console.log('Url updated');
+                    location.hash = customUrl;
+                    } else {
+                    if(res === false) {
+                        alert(`Url #${inputValue} is already taken. Please choose different one!`);
+                        input.val(`${url}`);
+                    }
+                }
                 })
                 .fail((err) => {
                     console.log('We could not update your custom url');
                     console.log(err);
                 })
+            }
         }
         if (change.ops.length > 0) {
             let dataRepeat = {
@@ -148,6 +163,7 @@ $(document).ready(() => {
     //appending input
     $('.ql-toolbar').append(`<div class='inToolbar' style='display: inline-block;'><input type='text' maxlength='6'></input></div><div class='hashtag' style='float: right; margin-right: 3px;'>#</div>`);
 
+    // displaying that changes are being saved
     function savingChanges(bool) {
         if (bool === true) {
             document.title = 'Saving changes...'

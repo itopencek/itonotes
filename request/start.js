@@ -53,7 +53,7 @@ async function randomNumber(callback) {
 function addToDatabase(url, callback) {
     let isoDate = new Date().toISOString();
     let newUrl = url;
-    pool.query(`INSERT INTO url VALUES(((SELECT max(id) FROM url)+1), '${newUrl}', '${isoDate}', '', '')`, (err) => {
+    pool.query(`INSERT INTO url VALUES(((SELECT max(id) FROM url)+1), '${newUrl}', '${isoDate}', '')`, (err) => {
         if (err) throw err;
         callback(url);
     })

@@ -43,7 +43,7 @@ router.post('*', (req, res) => {
         
         case '/custom':
             require('../request/updateCustomUrl')(data, (response) => {
-                res.send(true);
+                res.send(response);
             })
             break;
         //default

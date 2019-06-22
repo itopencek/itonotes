@@ -14,18 +14,15 @@ function getData(url, callback) {
         client.query(`SELECT * FROM url WHERE url = '${url}'`, (err, response) => {
             if (err) throw err;
             if (response.rowCount == 0) {
-                client.query(`SELECT * FROM url WHERE custom = '${url.substr(1)}'`, (error, responses) => {
-                    if (error) throw error;
-                    client.release()
-                    if (responses.rowCount == 0) {
-                        callback(false, '')
-                    } else {
-                        callback(true, responses.rows[0])
-                    }
-                })
-            } else if (response.rows[0].url === url) {
                 client.release()
-                callback(true, response.rows[0])
+                callback(false, '')
+            } else if (response.rows[0].url === url) {
+                let today = new Date().getTime();
+                client.query(`UPDATE url SET date = '${today}' WHERE url = '${url}'`, (err) => {
+                    if(err) throw err;
+                    client.release()
+                    callback(true, response.rows[0])
+                })
             } else {
                 client.release()
                 callback(false, '')

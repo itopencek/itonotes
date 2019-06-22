@@ -13,15 +13,15 @@ function update(data, callback) {
 
     pool.connect((err, client) => {
         if (err) throw err;
-        client.query(`SELECT * FROM url WHERE custom = '${data.input}'`, (err, response) => {
+        client.query(`SELECT * FROM url WHERE url = '${data.input}'`, (err, response) => {
             if (err) throw err;
             if (response.rows.length === 0) {
-                client.query(`UPDATE url SET custom = '${data.input}' WHERE url = '#${data.url}'`, (err) => {
+                client.query(`UPDATE url SET url = '#${data.input}' WHERE url = '#${data.url}'`, (err) => {
                     if (err) throw err;
                     client.release()
                     callback(true)
                 })
-            }else{
+            } else {
                 callback(false)
             }
         })
@@ -29,13 +29,10 @@ function update(data, callback) {
 }
 
 function main(data, callback) {
-    if (!conn) {
-        update(data, (bool) => {
-            callback()
-        })
-    } else {
-        callback(conn)
-    }
+    update(data, (bool) => {
+        callback(bool)
+    })
+
 }
 
 module.exports = main;
