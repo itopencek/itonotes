@@ -53,6 +53,14 @@ main{
         padding-top: 15px;
         margin: 0px;
         overflow: scroll;
+        overflow-x: hidden;
+        position: relative;
+        z-index: -1;
+    }
+    /* changing z-indexes everywhere */
+    #editor-wrapper, main, body, html{
+        position: relative;
+        z-index: -2;
     }
     .ql-toolbar{
         position: sticky;

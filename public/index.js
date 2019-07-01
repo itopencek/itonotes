@@ -1,12 +1,10 @@
-// WARNING SAFETY
-// NOT CHECKING USER INPUT in the URL
-
 $(document).ready(() => {
     var Delta = Quill.import('delta');
     let change = new Delta();
     let customUrl = '';
     let url = '';
 
+    // setting up Quill
     var quill = new Quill('#editor', {
         modules: {
             toolbar: [
@@ -23,8 +21,9 @@ $(document).ready(() => {
             ]
         },
         placeholder: 'Note everything...',
-        theme: 'snow' // or 'bubble'
+        theme: 'snow'
     });
+
     // on every text-change save data to 'change'
     quill.on('text-change', (delta) => {
         change = change.compose(delta);
@@ -32,6 +31,7 @@ $(document).ready(() => {
 
     //starting function
     function start() {
+
         //checking if url has # in it
         if (location.hash) {
             let data = {
@@ -39,6 +39,7 @@ $(document).ready(() => {
             };
             
             $('.inToolbar input').val(location.hash.substr(1));
+
             //ajax to get data from db where url = location.hash
             $.ajax({
                     'method': 'POST',
@@ -47,6 +48,7 @@ $(document).ready(() => {
                     'data': data,
                 })
                 .done((updateData) => {
+
                     //if successful then update the text-box
                     if (updateData.custom !== '') {
                         $('.inToolbar input').val(updateData.url.substr(1));
@@ -88,7 +90,8 @@ $(document).ready(() => {
         }
     }
 
-    //updating database
+    // chceking for changes, if any saving them
+    // both input for url and basic text
     function repeatFunc() {
         let input = $('.inToolbar input');
         if (customUrl !== input.val()) {
@@ -97,6 +100,15 @@ $(document).ready(() => {
                 customUrl = '';
             }
             let inputValue = input.val();
+
+            // chceking for malicious input / making sure
+            // user uses only letters and numbers
+            if(/[^a-z^A-Z^0-9]/gm.test(inputValue)){
+                alert("Url can only contain letters and numbers!");
+                input.val(url);
+                return;
+            }
+
             let dataRepeat = {
                 'data': {
                     'url': url,
@@ -135,6 +147,7 @@ $(document).ready(() => {
             };
 
             savingChanges(true)
+
             //ajax to send dataRepeat to update data in db
             $.ajax({
                     'type': 'POST',
@@ -160,7 +173,8 @@ $(document).ready(() => {
             return 'There are unsaved changes. Are you sure you want to leave?';
         }
     }
-    //appending input
+
+    //appending input for url changes
     $('.ql-toolbar').append(`<div class='inToolbar' style='display: inline-block;'><input type='text' maxlength='6'></input></div><div class='hashtag' style='float: right; margin-right: 3px;'>#</div>`);
 
     // displaying that changes are being saved
@@ -177,6 +191,15 @@ $(document).ready(() => {
         } else {
             document.title = 'Error while saving changes';
         }
+    }
+
+    const windowWidth = window.innerWidth;
+
+    // on mobile - options open to the top
+    if(windowWidth < 651){
+        $(".ql-picker-options").css("top","auto");
+        $(".ql-picker-options").css("bottom","100%");
+        $(".ql-picker-options").css("z-index","2");
     }
 
     start()
