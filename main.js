@@ -9,8 +9,8 @@ app.use(bodyparser.urlencoded({
     extended: true
 }));
 
-//EJS
-app.set('view engine', 'ejs');
+//views
+app.use(express.static(__dirname + '/views'));
 
 //midleware for public/static files
 app.use(express.static(path.join(__dirname, 'public')));
