@@ -20,7 +20,7 @@ As this was my first larger NodeJS app I had to learn how to create an app from 
 but to be specific
 - REST api using express
 - asynchronous operations in javascript - callbacks, promises
-- working with [Postgre](https://www.postgresql.org/) database
+- working with [Postgres](https://www.postgresql.org/) database
 - deploying app to [heroku](https://www.heroku.com/)
 - designing app for smaller devices (mobile)
 - working with Quill's API
