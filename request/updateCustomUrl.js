@@ -10,7 +10,6 @@ const pool = new Pool({
 var conn = null;
 
 function update(data, callback) {
-
     pool.connect((err, client) => {
         if (err) throw err;
         client.query(`SELECT * FROM url WHERE url = '${data.input}'`, (err, response) => {

@@ -11,6 +11,7 @@ var conn = null;
 
 function getData(url, callback) {
     pool.connect((err, client) => {
+        if(err) throw err;
         client.query(`SELECT * FROM url WHERE url = '${url}'`, (err, response) => {
             if (err) throw err;
             if (response.rowCount == 0) {
@@ -21,7 +22,7 @@ function getData(url, callback) {
                 client.query(`UPDATE url SET date = '${today}' WHERE url = '${url}'`, (err) => {
                     if(err) throw err;
                     client.release()
-                    callback(true, response.rows[0])
+                    callback(true, JSON.stringify(response.rows[0]));
                 })
             } else {
                 client.release()

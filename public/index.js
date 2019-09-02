@@ -3,7 +3,19 @@ $(document).ready(() => {
     let change = new Delta();
     let customUrl = '';
     let url = '';
+    
+    // chosen characters to html entities
+    function htmlEntities(str){
+        return str.replace(/&/gm, '$amp;').replace(/</gm, '$lt;').replace(/>/gm, '$gt;').replace(/"/gm, '$quot;').replace(/`/gm, '$grave;').replace(/;/gm, '$semi;').replace(/'/gm, '$apos;');
+    }
 
+    // chosen html entities to characters
+    // used on text after htmlEntities
+    // to get the original text back
+    function undoHtmlEntities(str){
+        return str.replace(/\$amp;/gm, '&').replace(/\$lt;/gm, '<').replace(/\$gt;/gm, '>').replace(/\$quot;/gm, '"').replace(/\$grave;/gm, '`').replace(/\$semi;/gm, ';').replace(/\$apos;/gm, '\'');
+    }
+    
     // setting up Quill
     var quill = new Quill('#editor', {
         modules: {
@@ -27,6 +39,16 @@ $(document).ready(() => {
     // on every text-change save data to 'change'
     quill.on('text-change', (delta) => {
         change = change.compose(delta);
+        const limit = 9000;
+
+        // getting length of content
+        let length = quill.getLength() - 1;
+        $("#counter").remove();
+        $("main").append(`<div id='counter'>${length} / ${limit}</div>`);
+        
+        if(length > limit){
+            quill.deleteText(limit, length);
+        }
     });
 
     //starting function
@@ -44,10 +66,13 @@ $(document).ready(() => {
             $.ajax({
                     'method': 'POST',
                     'url': '/getData',
-                    'dataType': 'json',
                     'data': data,
                 })
                 .done((updateData) => {
+                    updateData = JSON.parse(updateData);
+
+                    //changing html entities back to characters
+                    updateData.data = undoHtmlEntities(updateData.data);
 
                     //if successful then update the text-box
                     if (updateData.custom !== '') {
@@ -141,8 +166,15 @@ $(document).ready(() => {
             }
         }
         if (change.ops.length > 0) {
+            let dataToCheck = quill.getContents().ops;
+
+            // changing characters to html entities
+            for(let i = 0; i < dataToCheck.length; i++){
+                dataToCheck[i].insert = htmlEntities(dataToCheck[i].insert);
+            }
+
             let dataRepeat = {
-                'data': quill.getContents().ops,
+                'data': dataToCheck,
                 'hash': location.hash,
             };
 

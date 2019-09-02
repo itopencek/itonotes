@@ -10,7 +10,7 @@ const pool = new Pool({
 var conn = null;
 
 function updateDatabase(data, hash, callback) {
-    let dataOut = JSON.stringify(data)
+    let dataOut = JSON.stringify(data);
     pool.connect((err, client) => {
         if(err) throw err;
         client.query(`UPDATE url SET data = '${dataOut}' WHERE url = '${hash}'`, (err, res) => {
