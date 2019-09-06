@@ -4,8 +4,9 @@ body, html{
     overflow-y: hidden;
     font-family: 'Roboto', sans-serif;
 }
-.ql-toolbar{
+.ql-snow{
     display: block;
+    position: relative;
 }
 main{
     width: 100%;
@@ -42,9 +43,53 @@ main{
 #counter{
     position: absolute;
     font-family: 'Manjari', sans-serif;
-    right: 5%;
+    left: 5%;
     bottom: 5%;
     color: #ccc;
+}
+#status{
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    border-radius: 10px;
+    padding: 2px 6px 2px 6px;
+}
+.loading{
+    width: 15px;
+    height: 15px;
+    border: 3px solid white;
+    border-top: 3px solid #ccc;
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+}
+.loaded{
+    width: 15px;
+    height: 8px;
+    border-left: 3px solid #ccc;
+    border-bottom: 3px solid #ccc;
+    transform: rotate(-45deg);
+    animation: done 2s linear;
+}
+.notloaded{
+    color: #ccc;
+    font-weight: 900;
+    content: "X";
+}
+@keyframes done{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+@keyframes spin{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
 }
 @media screen and (max-width: 650px){
     #editor-wrapper{
@@ -84,6 +129,9 @@ main{
     }
     #counter{
         top: 2%;
-        right: 5%;
+        left: 5%;
+    }
+    #status{
+        top: 2%;
     }
 }

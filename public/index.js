@@ -210,17 +210,30 @@ $(document).ready(() => {
     $('.ql-toolbar').append(`<div class='inToolbar' style='display: inline-block;'><input type='text' maxlength='6'></input></div><div class='hashtag' style='float: right; margin-right: 3px;'>#</div>`);
 
     // displaying that changes are being saved
+    const status = $("#status div");
+
     function savingChanges(bool) {
         if (bool === true) {
-            document.title = 'Saving changes...'
+            document.title = 'Saving changes...';
+            status.removeClass("notloaded");
+            status.removeClass("loaded");
+            status.addClass("loading");
+
         } else if (bool === false) {
             setTimeout(() => {
                 document.title = 'Changes Saved!';
+                status.removeClass("loading");
+                status.addClass("loaded");
+
                 setTimeout(() => {
+                    status.removeClass("loaded");
                     document.title = 'itoNotes';
+
                 }, 3000)
             }, 1000)
         } else {
+            status.removeClass("loading");
+            status.addClass("notloaded");
             document.title = 'Error while saving changes';
         }
     }
